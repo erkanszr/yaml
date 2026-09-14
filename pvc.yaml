@@ -1,0 +1,14 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: filenet-filestore
+  namespace: filenet-bbs
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+  volumeName: filenet-filestore-pv
+  storageClassName: managed-nfs-storage
+  volumeMode: Filesystem
