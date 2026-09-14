@@ -28,18 +28,17 @@ spec:
     cpe: true
     graphql: false
     ban: true
-
- ecm_configuration:
+    
+  ecm_configuration:
     fncm_secret_name: ibm-fncm-secret
     cpe:
-    
       datavolume:
         existing_pvc_for_cpe_filestore: 
           name: "filenet-filestore-pvc"
-          size: 100Gi
-          
+          size: 100Gi    
       hostname: filenet.bbsopenshift.com
       replica_count: 1 
+      
   navigator_configuration:
     ban_secret_name: ibm-ban-secret
     hostname: navigator.bbsopenshift.com
