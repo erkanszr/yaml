@@ -6,7 +6,7 @@ spec:
   capacity:
     storage: 100Gi
   nfs:
-    server: bbsopenshiftnfs
+    server: xxxxxxxxxx
     path: >-
       /data/FileNet/filenet-filestore
   accessModes:
