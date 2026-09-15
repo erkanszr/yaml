@@ -1,7 +1,7 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: filenet-filestore
+  name: filenet-filestore-pvc
   namespace: filenet-bbs
 spec:
   accessModes:
