@@ -1,0 +1,70 @@
+https://devopscube.com/create-self-signed-certificates-openssl/
+
+
+1-Create Certificate Authority
+openssl req -x509 -sha256 -days 356 -nodes -newkey rsa:2048 -subj "/CN=bilgibirikim.com/C=TR/L=Istanbul" -keyout rootCA.key -out rootCA.crt 
+
+
+2- Create the Server Private Key 
+openssl genrsa -out server.key 2048
+
+
+3- Create Certificate Signing Request Configuration
+cat > csr.conf <<EOF
+[ req ]
+default_bits = 2048
+prompt = no
+default_md = sha256
+req_extensions = req_ext
+distinguished_name = dn
+
+[ dn ]
+C = TR
+ST = Istanbul
+L = Istanbul
+O = BBS
+OU = IT
+CN = filenet.bbsopenshift.com
+
+[ req_ext ]
+subjectAltName = @alt_names
+
+[ alt_names ]
+DNS.1 = filenet.bbsopenshift.com
+DNS.2 = navigator.bbsopenshift.com
+DNS.3 = *.filenet.bbsopenshift.com
+DNS.4 = *.navigator.bbsopenshift.com
+DNS.5 = *.apps.c1ocp4.bbsopenshift.com
+
+EOF
+
+
+4- Generate Certificate Signing Request (CSR) Using Server Private Key
+openssl req -new -key server.key -out server.csr -config csr.conf
+
+
+5- Create the Certificate Extensions Configuration
+cat > cert.conf <<EOF
+
+authorityKeyIdentifier=keyid,issuer
+basicConstraints=CA:FALSE
+keyUsage = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment
+subjectAltName = @alt_names
+
+[alt_names]
+DNS.1 = filenet.bbsopenshift.com
+DNS.2 = navigator.bbsopenshift.com
+DNS.3 = *.filenet.bbsopenshift.com
+DNS.4 = *.navigator.bbsopenshift.com
+DNS.5 = *.apps.c1ocp4.bbsopenshift.com
+EOF
+
+
+6- Generate SSL certificate With self signed CA
+openssl x509 -req -in server.csr -CA rootCA.crt -CAkey rootCA.key -CAcreateserial -out server.crt -days 365 -sha256 -extfile cert.conf
+
+
+7- Create tls.crt and tls.key
+cat server.crt rootCA.crt > tls.crt
+cp server.key tls.key
+oc create secret tls cp4a-wildcard --cert tls.crt --key tls.key
